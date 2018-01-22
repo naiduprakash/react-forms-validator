@@ -1,12 +1,15 @@
 import React from 'react';
-import { forEach, isEqual }  from 'lodash';
+import { forEach, isEqual,isEmpty,findIndex }  from 'lodash';
 import PropTypes from 'prop-types';
+import { format } from 'util';
+
+let formElements = [];
 
 export default class Validator extends React.Component{
 
     static propTypes (){
         isFormSubmitted:PropTypes.bool.isRequired;
-        reference:PropTypes.any.isRequired;
+        reference:PropTypes.object.isRequired;
         validationRules:PropTypes.object.isRequired;
         validationMessages:PropTypes.object.isRequired;
         isValidationError:PropTypes.func.isRequired;
@@ -17,26 +20,86 @@ export default class Validator extends React.Component{
         this.state = {
             error:""
         }
+        this.formElements = [];
     }
 
     componentDidUpdate(prevProps){
         let {isFormSubmitted,reference,validationRules,validationMessages,isValidationError} = this.props;
+
+        
+
         if ( !isEqual( isFormSubmitted, prevProps.isFormSubmitted ) || !isEqual( reference, prevProps.reference )){
             if( validationRules ){
-                let flag=true;
-                forEach( validationRules, ( rule, func ) => {
-                    if (flag){
-                        let message = validationMessages[func];
-                        if( this[func]( rule, reference ) ){
-                            this.setState({error:message});
-                            flag=false;
+                let flag=[];
 
-                        }else{
-                            this.setState({error:""});
+                let tempElements = formElements;
+               
+                forEach(reference,(val,key)=>{
+                    
+                    if(tempElements.length > 0){
+                        let tmpflag = false;
+                        let tempflag2 = false;
+                        forEach(tempElements,(val,key)=>{
+                            if(isEqual(val,{validationRules:validationRules,validationMessages:validationMessages,reference:reference})){
+                                
+                            }else if( isEqual(val['validationRules'],validationRules) && isEqual(val['validationMessages'],validationMessages) ){
+                                tempflag2 = true;
+                            }else{
+                                tmpflag = true;
+                            }
+                        });
+                        if(tmpflag){
+                            formElements.push({validationRules:validationRules,validationMessages:validationMessages,reference:reference});
+                        }else if(tempflag2){
+
+                            let index = findIndex(tempElements, { validationRules:validationRules,validationMessages:validationMessages });
+                            console.log(tempElements,{ validationRules:validationRules,validationMessages:validationMessages });
+                            if(index !== -1){
+                                formElements[index] = {validationRules:validationRules,validationMessages:validationMessages,reference:reference}
+                            }
                         }
+
+                    }else{
+                        formElements.push({validationRules:validationRules,validationMessages:validationMessages,reference:reference});
                     }
+                    
+                })
+                
+                forEach(formElements,(val,key)=>{
+                    let tempflag = true;
+                    console.log(val['validationRules'],val['reference']);
+                    forEach( val['validationRules'], ( rule, func ) => {
+                        if (tempflag){
+                            let message = val['validationMessages'][func];
+
+                            forEach(val['reference'],(val,key)=>{
+                                console.log(this[func],rule,val);
+                                if( this[func]( rule, val ) ){
+                                    this.setState({error:message});
+                                    tempflag=false;
+                                }else{
+                                    this.setState({error:""});
+                                }
+                            })
+                        }
+                    });
+                   
+                    flag.push(tempflag);
+                    
                 });
-                if(flag){
+                // forEach( validationRules, ( rule, func ) => {
+                //     if (flag){
+                //         let message = validationMessages[func];
+                //         if( this[func]( rule, reference ) ){
+                //             this.setState({error:message});
+                //             flag=false;
+
+                //         }else{
+                //             this.setState({error:""});
+                //         }
+                //     }
+                // });
+                if(flag.includes(true)){
                     if(isValidationError){
                         isValidationError(false);
                     }
