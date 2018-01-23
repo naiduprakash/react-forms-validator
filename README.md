@@ -31,13 +31,13 @@ class Login extends React.Component{
         this.state = {
             contact_no:"",
             password:"",
+            isFormValidationErrors : true,
             submitted:false,
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleFormSubmit = this.handleFormSubmit.bind(this);
         this.isValidationError = this.isValidationError.bind(this);
         this.flag= true;
-        this.isFormValidationErrors = false;
     }
     
     
@@ -46,16 +46,19 @@ class Login extends React.Component{
         this.setState( { [name]:value } );
         let { submitted } = this.state;
     }
+
     isValidationError(flag){
-        this.isFormValidationErrors = flag;
+         this.setState({isFormValidationErrors:flag});
     }
         
     handleFormSubmit(event){
         event.preventDefault();
         this.setState( { submitted:true } );
-        let { contact_no, password } = this.state;
-        if ( !this.isFormValidationErrors ){
-            //you are ready to dispatch submit action here.
+        let { contact_no, password, isFormValidationErrors } = this.state;
+        if ( !isFormValidationErrors ){
+            //you are ready to perform your action here like dispatch
+            // let { dispatch, login } = this.props;
+            // dispatch( login( { params:{},data:{ contact_no, password } } ) );
         }
     }
         
@@ -73,7 +76,7 @@ class Login extends React.Component{
                             <Validator 
                                 isValidationError={this.isValidationError}
                                 isFormSubmitted={submitted} 
-                                reference={contact_no}
+                                reference={{contact_no:contact_no}}
                                 validationRules={{required:true,number:true,maxLength:10}} 
                                 validationMessages={{required:"This field is required",number:"Not a valid number",maxLength:"Not a valid number"}}/>
                     </div>
@@ -86,8 +89,9 @@ class Login extends React.Component{
                             onChange={ this.handleChange } 
                             autoComplete/>
                             <Validator 
+                                isValidationError={this.isValidationError}
                                 isFormSubmitted={submitted} 
-                                reference={password} 
+                                reference={{password:password}} 
                                 validationRules={{required:true}} 
                                 validationMessages={{required:"This field is required",}}/>
 
@@ -108,12 +112,30 @@ class Login extends React.Component{
 
 ```isValidationError``` function.
 
-```isFormSubmitted``` boolean [true|false].
+```isFormSubmitted``` boolean [true|false]. true - form is submitted || false - form is not submitted 
 
-```reference``` reference to input value. State value like ```contact_no``` and ```password``` in above example.
+```reference``` object key value pair. value is equal to relative input value . State value like ```contact_no``` and ```password``` in above example.
 
 ```validationRules``` object. chack below for available rules.
 
 ```validationMessages``` object. 
 
-Note:: key of ```validationRules``` object and ```validationMessages``` should be same and required.
+Note:: key of ```validationRules``` object and ```validationMessages``` must be same.
+
+
+## Available validation rules 
+
+**required** :-  required:<boolean> ```required:true```
+**minLength** :- minLength:<length> ```minLength:6```
+**maxLength** :- maxLength:<length> ```maxLength:10```
+**email** :- email:<boolean> ```email:true```
+**url** :- url:<boolean> ```url:true```
+**number** :- number:<boolean> ```number:true```
+**date** :- date:<boolean> ```date:true```
+**color** :- color:<boolean> ```color:true```
+**equalTo** :- equalTo:<refererValue> ```equalTo:password```
+
+Note:- in equalTo password is a value to which this rule is validates
+
+**More are comming**
+ 

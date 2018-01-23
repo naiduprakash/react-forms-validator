@@ -31,9 +31,12 @@ export default class Validator extends React.Component{
                 
                 let flag=[];
                 let tempElements = formElements;
+                
+                let refKey;
 
                 forEach(reference,(val,key)=>{
                     tempElements[key] = { validationRules: validationRules, validationMessages: validationMessages, reference: reference };
+                    refKey=key;
                 })
 
                 forEach(tempElements,(val,key)=>{
@@ -41,12 +44,11 @@ export default class Validator extends React.Component{
                     let tempflag2 = true;
                     let message = "";
                     forEach( val['validationRules'], ( rule, func ) => {
+                        
                         if (tempflag){
-                            if (isEqual(val['validationRules'], validationRules) && isEqual(val['validationMessages'], validationMessages)) {
-                                
+                            if (isEqual(refKey,key)) {
                                 message = val['validationMessages'][func];
                                 forEach(val['reference'], (val, key) => {
-                                    console.log('function',this[func](rule, val),this[func]);
                                     if (this[func](rule, val)) {
                                         this.setState({ error: message });
                                         tempflag = false;
@@ -57,7 +59,6 @@ export default class Validator extends React.Component{
                                 })
                             }else{
                                 forEach(val['reference'], (val, key) => {
-                                    console.log('function',this[func](rule, val),this[func]);
                                     if (this[func](rule, val)) {
                                         tempflag = false;
                                     }
@@ -133,12 +134,11 @@ export default class Validator extends React.Component{
     }
 
     equalTo( rule, value ){
-        console.log('hits');
-        debugger;
+    
         if(rule === value){
-            return true;
+            return false;
         }
-        return false;
+        return true;
     }
     
     
