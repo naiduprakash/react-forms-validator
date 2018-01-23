@@ -46,6 +46,7 @@ export default class Validator extends React.Component{
                                 
                                 message = val['validationMessages'][func];
                                 forEach(val['reference'], (val, key) => {
+                                    console.log('function',this[func](rule, val),this[func]);
                                     if (this[func](rule, val)) {
                                         this.setState({ error: message });
                                         tempflag = false;
@@ -56,6 +57,7 @@ export default class Validator extends React.Component{
                                 })
                             }else{
                                 forEach(val['reference'], (val, key) => {
+                                    console.log('function',this[func](rule, val),this[func]);
                                     if (this[func](rule, val)) {
                                         tempflag = false;
                                     }
@@ -126,6 +128,15 @@ export default class Validator extends React.Component{
     color(rule,value){
         if (rule === true){
             return !/^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(value);
+        }
+        return false;
+    }
+
+    equalTo( rule, value ){
+        console.log('hits');
+        debugger;
+        if(rule === value){
+            return true;
         }
         return false;
     }
