@@ -125,15 +125,23 @@ Note:: key of ```validationRules``` object and ```validationMessages``` must be 
 
 ## Available validation rules 
 
-**required** :-  required:<boolean> ```required:true```
-**minLength** :- minLength:<length> ```minLength:6```
-**maxLength** :- maxLength:<length> ```maxLength:10```
-**email** :- email:<boolean> ```email:true```
-**url** :- url:<boolean> ```url:true```
-**number** :- number:<boolean> ```number:true```
-**date** :- date:<boolean> ```date:true```
-**color** :- color:<boolean> ```color:true```
-**equalTo** :- equalTo:<refererValue> ```equalTo:password```
+**required** :-  required:boolean ```required:true```
+
+**minLength** :- minLength:length ```minLength:6```
+
+**maxLength** :- maxLength:length ```maxLength:10```
+
+**email** :- email:boolean ```email:true```
+
+**url** :- url:boolean ```url:true```
+
+**number** :- number:boolean ```number:true```
+
+**date** :- date:boolean ```date:true```
+
+**color** :- color:boolean ```color:true```
+
+**equalTo** :- equalTo:refererValue ```equalTo:password```
 
 Note:- in equalTo password is a value to which this rule is validates
 
